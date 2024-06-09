@@ -1,0 +1,26 @@
+﻿@model IEnumerable<Common.DTOModels.UI.MediaDTO>
+
+@foreach (var Media in Model)
+{
+    <div class="card-body module-video">
+     
+            <div class="media">
+
+             <a href="~/Membership/Media/@Media.Id" class="no-text-decoration">
+                <div class="media-left hidden-xs overflow-hidden">
+                    <img src="@Media.Thumbnail" width="100">
+                </div>
+                <div class="media-body">
+                    <h5 class="no-margin">@Media.Title</h5>
+                    <p class="text-muted no-margin">
+                        <i class="material-icons vertical-align text-small">alarm</i>
+                       
+                    </p>
+                    <p class="no-margin">@Media.Description</p>
+                </div>
+            </a>
+            </div>
+     
+
+    </div>
+}

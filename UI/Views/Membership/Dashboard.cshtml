@@ -1,0 +1,20 @@
+﻿@model DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h1>Dashboard</h1>
+<hr>
+@foreach (var dashboardRow in Model.topicDTOs)
+{
+    <div class="row">
+        @foreach (var topic in dashboardRow)
+        {
+            <partial name="_TopicCardPartial" model="@topic" />
+            @*@await Html.PartialAsync("_CourseCardPartial", course)*@
+        }
+    </div>
+}
+
+

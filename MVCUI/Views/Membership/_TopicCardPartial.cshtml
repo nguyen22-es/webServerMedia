@@ -1,0 +1,12 @@
+﻿@model TopicDTO
+
+<div class="col-sm-4">
+    <div class="card no-border-radius">
+        <img class="card-img-top no-border-radius" src="@Model.TopicImageUrl">
+        <div class="card-body">
+            <h3 class="card-title">@Model.TopicTitle</h3>
+            <p class="card-text">@Model.TopicDescription</p>
+            <a class="btn btn-primary no-border-radius" href="~/Membership/Course/@Model.TopicId">View Course</a>
+        </div>
+    </div>
+</div>

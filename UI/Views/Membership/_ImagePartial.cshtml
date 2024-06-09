@@ -1,0 +1,105 @@
+﻿@model UI.Models.MembershipViewModels.MediaViewModel
+
+<div class="card no-border-radius">
+    @if (Model.mediaDTO.Url != null)
+    {
+        <div class="image-container" style="position: relative; width: 300px; height: 300px;">
+            <img id="originalImage" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" src="@Model.mediaDTO.Url" alt="Media Image">
+            <img id="processedImage" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none;" alt="Processed Image">
+        </div>
+    }
+    <div class="card-body">
+        <h2>@Model.mediaDTO.Title</h2>
+        <div style="margin-top: 10px;">
+            <button class="process-button" data-filter="grayscale">Đen trắng</button>
+            <button class="process-button" data-filter="sharpen">Làm nét</button>
+            <button class="process-button" data-filter="blur">Làm mờ</button>
+            <button class="process-button" data-filter="resize">Thu gọn</button>
+            <button id="resetButton">Hiển thị ảnh gốc</button>
+            <button class="zoom-button" data-zoom="in">Phóng to</button>
+            <button class="zoom-button" data-zoom="out">Thu nhỏ</button>
+            <button id="downloadButton">Tải về ảnh đã xử lý</button>
+        </div>
+      
+        <div class="video-course">
+            <img src="@Model.topicDTO.TopicImageUrl" alt="Topic Image">
+            <span class="vertical-align text-large">@Model.topicDTO.TopicTitle</span>
+        </div>
+    </div>
+    <hr class="no-margin">
+    <div class="card-body">
+        @Model.mediaDTO.Description
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let originalImageUrl = '@Model.mediaDTO.Url';
+        // Replace &amp; with & in the URL
+        originalImageUrl = originalImageUrl.replace(/&amp;/g, '&');
+
+        document.querySelectorAll('.process-button').forEach(button => {
+            button.addEventListener('click', async function () {
+                const filter = this.getAttribute('data-filter');
+
+                const response = await fetch('/Membership/ProcessImage', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ url: originalImageUrl, filter: filter })
+                });
+
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const processedImageUrl = URL.createObjectURL(blob);
+                    document.getElementById('originalImage').src = processedImageUrl; // Hiển thị ảnh đã xử lý
+                } else {
+                    console.error('Failed to process image');
+                }
+            });
+        });
+
+        document.getElementById('resetButton').addEventListener('click', function () {
+            document.getElementById('originalImage').src = originalImageUrl; // Hiển thị ảnh gốc
+        });
+    });
+
+
+    document.querySelectorAll('.zoom-button').forEach(button => {
+    button.addEventListener('click', function() {
+        const zoomType = this.getAttribute('data-zoom');
+        const img = document.getElementById('originalImage');
+        const currentWidth = img.clientWidth;
+        const currentHeight = img.clientHeight;
+        const scaleFactor = 1.1; // Factor to zoom in or out, adjust as needed
+
+        let newWidth, newHeight;
+
+        if (zoomType === 'in') {
+            newWidth = currentWidth * scaleFactor;
+            newHeight = currentHeight * scaleFactor;
+        } else if (zoomType === 'out') {
+            newWidth = currentWidth / scaleFactor;
+            newHeight = currentHeight / scaleFactor;
+        }
+
+        img.style.width = `${newWidth}px`;
+        img.style.height = `${newHeight}px`;
+    });
+});
+
+
+    document.getElementById('downloadButton').addEventListener('click', function () {
+        const originalImageUrl = document.getElementById('originalImage').src;
+
+        // Tạo một thẻ a để tải về
+        const downloadLink = document.createElement('a');
+        downloadLink.href = originalImageUrl;
+        downloadLink.download = 'processed_image.png'; // Tên của tập tin khi tải về
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    });
+</script>

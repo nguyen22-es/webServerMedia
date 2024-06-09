@@ -1,0 +1,60 @@
+﻿@page
+@using global::Admin.Pages.Medias
+@using Microsoft.AspNetCore.Http;
+@model CreateModel
+@inject SignInManager<VODUser> SignInManager
+@{
+    ViewData["Title"] = "Add Media";
+}
+
+@if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+{
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h1>@ViewData["Title"]</h1>
+            <partial name="_BackToIndexButtonsPartial" />
+            <p></p>
+            <form method="post" enctype="multipart/form-data">
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="Input.Title"></label>
+                    <input asp-for="Input.Title" class="form-control" />
+                    <span asp-validation-for="Input.Title" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Description"></label>
+                    <input asp-for="Input.Description" class="form-control" />
+                    <span asp-validation-for="Input.Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Duration"></label>
+                    <input asp-for="Input.Duration" class="form-control" />
+                    <span asp-validation-for="Input.Duration" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Thumbnail"></label>
+                    <input asp-for="Input.Thumbnail" class="form-control" />
+                    <span asp-validation-for="Input.Thumbnail" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.File"></label>
+                    <input type="file" asp-for="Input.File" class="form-control" />
+                    <span asp-validation-for="Input.File" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Module" class="control-label"></label>
+                    <select asp-for="Input.ModuleId" class="form-control" asp-items="ViewBag.Modules"></select>
+                </div>
+
+                <button type="submit" class="btn btn-success">Create</button>
+            </form>
+
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}
+
